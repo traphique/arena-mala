@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+
+# Malware samples (never commit binaries)
+samples/
+*.exe
+*.dll
+*.scr
+*.bat
+*.cmd
+*.ps1
+*.vbs
+*.js.malware
+*.bin
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
+# Vite
+.vite/
+
+# Coverage
+coverage/
+.nyc_output/
