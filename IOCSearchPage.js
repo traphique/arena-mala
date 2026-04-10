@@ -16,7 +16,7 @@ export default function IOCSearchPage() {
   };
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', padding: '28px 32px 80px' }}>
+    <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
       <div className="fade-up" style={{ marginBottom: 28 }}>
         <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6, letterSpacing: '-0.01em' }}>IOC Search</h2>
         <p style={{ color: 'var(--text3)', fontSize: 14 }}>

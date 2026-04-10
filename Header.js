@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   { path: '/threats', label: 'Threat Intel', icon: 'M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z M12 9v4 M12 17h.01' },
 ];
 
-export default function Header() {
+export default function Header({ onMenuClick }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [stats, setStats] = useState(null);
@@ -23,18 +23,33 @@ export default function Header() {
   return (
     <header style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '0 24px', height: 58,
+      padding: '0 16px 0 24px', height: 58,
       background: 'rgba(26,20,16,0.6)',
       backdropFilter: 'saturate(180%) blur(20px)',
       WebkitBackdropFilter: 'saturate(180%) blur(20px)',
       borderBottom: '1px solid rgba(200,170,120,0.06)',
-      flexShrink: 0, zIndex: 50,
+      flexShrink: 0, zIndex: 200,
       position: 'relative',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
+        {onMenuClick && (
+          <button
+            type="button"
+            className="header-menu-btn"
+            aria-label="Open navigation menu"
+            onClick={onMenuClick}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        )}
         {/* Logo */}
         <div
+          role="button"
+          tabIndex={0}
           onClick={() => navigate('/')}
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/'); } }}
           style={{
             display: 'flex', alignItems: 'center', gap: 11,
             cursor: 'pointer', userSelect: 'none',
@@ -71,11 +86,12 @@ export default function Header() {
         </div>
 
         {/* Nav */}
-        <nav style={{ display: 'flex', gap: 3 }}>
+        <nav className="header-nav" aria-label="Main pages">
           {NAV_ITEMS.map(item => {
             const active = location.pathname === item.path;
             return (
               <button
+                type="button"
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 style={{
@@ -113,7 +129,7 @@ export default function Header() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
         {stats && (
-          <div style={{
+          <div className="header-stat-pill" style={{
             display: 'flex', alignItems: 'center', gap: 8,
             padding: '5px 12px', borderRadius: 8,
             background: 'rgba(200,170,120,0.04)',

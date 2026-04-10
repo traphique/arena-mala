@@ -16,15 +16,28 @@ export default function HomePage() {
   const [stats, setStats] = useState(null);
   const [recent, setRecent] = useState([]);
   const [loadingRecent, setLoadingRecent] = useState(true);
+  const [bannerError, setBannerError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.getStats().then(setStats).catch(() => {});
-    api.getRecentSamples(8).then(r => { setRecent(r); setLoadingRecent(false); }).catch(() => setLoadingRecent(false));
+    let cancelled = false;
+    setBannerError(null);
+    api.getStats().then(s => { if (!cancelled) setStats(s); }).catch(err => {
+      if (!cancelled) setBannerError(err.message || 'Failed to load statistics');
+    });
+    api.getRecentSamples(8)
+      .then(r => { if (!cancelled) { setRecent(r); setLoadingRecent(false); } })
+      .catch(err => {
+        if (!cancelled) {
+          setLoadingRecent(false);
+          setBannerError(prev => prev || err.message || 'Failed to load recent samples');
+        }
+      });
+    return () => { cancelled = true; };
   }, []);
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', padding: '48px 48px 80px' }}>
+    <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
       {/* Hero */}
       <div className="fade-up" style={{ textAlign: 'center', marginBottom: 48 }}>
         <div className="fade-scale" style={{
@@ -41,8 +54,8 @@ export default function HomePage() {
           </svg>
           Malware Analysis Sandbox
         </div>
-        <h1 className="fade-up delay-1" style={{
-          fontFamily: 'var(--font-ui)', fontWeight: 800, fontSize: 52,
+        <h1 className="fade-up delay-1 home-hero-title" style={{
+          fontFamily: 'var(--font-ui)', fontWeight: 800,
           letterSpacing: '-0.03em', lineHeight: 1.08, marginBottom: 18,
         }}>
           Detonate & Analyze{' '}
@@ -62,6 +75,12 @@ export default function HomePage() {
         </p>
       </div>
 
+      {bannerError && (
+        <div className="home-error-banner fade-up" role="alert">
+          {bannerError}
+        </div>
+      )}
+
       {/* Submit form */}
       <div className="fade-scale delay-3" style={{ display: 'flex', justifyContent: 'center', marginBottom: 52 }}>
         <SubmitForm />
@@ -69,10 +88,7 @@ export default function HomePage() {
 
       {/* Stats */}
       {stats && (
-        <div className="fade-up delay-4" style={{
-          display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 14, maxWidth: 720, margin: '0 auto 52px',
-        }}>
+        <div className="fade-up delay-4 home-stats-grid">
           {[
             { label: 'Total Analyses', value: stats.total_analyses?.toLocaleString(), color: 'var(--accent)' },
             { label: 'Malicious Rate', value: stats.malicious_rate + '%', color: 'var(--red)' },

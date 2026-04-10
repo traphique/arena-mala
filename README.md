@@ -123,6 +123,60 @@ npm run dev
 
 The frontend runs on `http://localhost:5173` (Vite default) and proxies API calls to port 4000.
 
+### Production (single Node process)
+
+After `npm run build`, the same server serves the Vite output from `dist/` plus `/api` and `/ws`:
+
+```bash
+npm run build
+npm run start
+# or: npm run build:start
+```
+
+Open `http://localhost:4000` (or whatever `PORT` is set to). Deep links such as `/analysis/<id>` are handled by the SPA fallback.
+
+**Health check:** `GET /api/health` returns `{ ok, supabase, cape }` for load balancers.
+
+### Reverse proxy (TLS + WebSockets)
+
+Place nginx or Caddy in front of Node and forward **Upgrade** / **Connection** headers so `/ws` works. Allow large request bodies for file uploads (up to 100 MB matches multer in `server.js`).
+
+**nginx** (illustrative):
+
+```nginx
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+server {
+    listen 443 ssl;
+    client_max_body_size 100M;
+
+    location / {
+        proxy_pass http://127.0.0.1:4000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+    }
+}
+```
+
+**Caddy** (illustrative): `reverse_proxy localhost:4000` with default WebSocket support; set `request_body` limits as needed for your install.
+
+### Docker
+
+```bash
+docker compose build
+docker compose up -d
+```
+
+Mount-backed sample storage uses the `arena_samples` volume (`samples` persist across container restarts). Configure Supabase and CAPE via `.env` as in local setup.
+
 ---
 
 ## API Reference
@@ -217,6 +271,14 @@ Response: [{ "name": "Emotet", "count": 12, "tags": [...] }]
 GET /api/stats
 
 Response: { "total_analyses": 142, "malicious_rate": 34, "today": 7 }
+```
+
+### Health
+
+```
+GET /api/health
+
+Response: { "ok": true, "supabase": true, "cape": false }
 ```
 
 ### WebSocket

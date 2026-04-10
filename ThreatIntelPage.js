@@ -11,7 +11,7 @@ export default function ThreatIntelPage() {
   }, []);
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', padding: '28px 32px 80px' }}>
+    <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
       <div className="fade-up" style={{ marginBottom: 28 }}>
         <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6, letterSpacing: '-0.01em' }}>Threat Intel</h2>
         <p style={{ color: 'var(--text3)', fontSize: 14 }}>
@@ -27,7 +27,7 @@ export default function ThreatIntelPage() {
         <EmptyState message="No threat intel yet" sub="Submit samples for analysis to build threat intelligence" />
       )}
 
-      <div style={{ display: 'grid', gap: 14, maxWidth: 720 }}>
+      <div className="threat-page-grid">
         {families.map((fam, i) => (
           <div key={fam.name} className="glass gradient-border fade-scale" style={{
             padding: '20px 22px', animationDelay: `${i * 0.08}s`,

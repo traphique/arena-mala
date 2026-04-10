@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import { createServer } from 'node:http';
-import { WebSocketServer } from 'ws';
+import { WebSocket, WebSocketServer } from 'ws';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -39,6 +39,8 @@ const server = createServer(app);
 const wss = new WebSocketServer({ noServer: true });
 
 const SAMPLE_DIR = process.env.SAMPLE_STORAGE_DIR || './samples';
+const DIST_DIR = path.resolve(process.cwd(), 'dist');
+const HAS_DIST = fs.existsSync(path.join(DIST_DIR, 'index.html'));
 fs.mkdirSync(SAMPLE_DIR, { recursive: true });
 
 const upload = multer({
@@ -57,13 +59,18 @@ function emit(shortId, type, data) {
   const clients = subscriptions.get(shortId);
   if (!clients) return;
   const payload = JSON.stringify({ type, data });
-  for (const ws of clients) {
-    if (ws.readyState === ws.OPEN) ws.send(payload);
+  for (const socket of clients) {
+    if (socket.readyState === WebSocket.OPEN) socket.send(payload);
   }
 }
 
 server.on('upgrade', (request, socket, head) => {
-  if (request.url !== '/ws') return socket.destroy();
+  try {
+    const pathname = new URL(request.url, `http://${request.headers.host || 'localhost'}`).pathname;
+    if (pathname !== '/ws') return socket.destroy();
+  } catch {
+    return socket.destroy();
+  }
   wss.handleUpgrade(request, socket, head, ws => wss.emit('connection', ws, request));
 });
 
@@ -274,6 +281,14 @@ async function runPipeline(analysis, fileBuffer, filePath) {
 
 // ─── API Routes ──────────────────────────────
 
+app.get('/api/health', (_req, res) => {
+  res.json({
+    ok: true,
+    supabase: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY),
+    cape: Boolean(process.env.CAPE_API_URL),
+  });
+});
+
 app.get('/api/stats', safe(async (_req, res) => {
   const stats = await getStats();
   res.json(stats);
@@ -427,6 +442,23 @@ app.get('/api/ioc/threat-families', safe(async (_req, res) => {
   })));
 }));
 
+// ─── Production: Vite build (same origin) ────
+
+if (HAS_DIST) {
+  app.use(express.static(DIST_DIR));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(DIST_DIR, 'index.html'));
+  });
+}
+
+app.use((req, res) => {
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  res.status(404).send('Not found');
+});
+
 // ─── Start ───────────────────────────────────
 
 const PORT = Number(process.env.PORT || 4000);
@@ -435,4 +467,5 @@ server.listen(PORT, () => {
   console.log(`  Supabase: ${process.env.SUPABASE_URL ? 'configured' : 'NOT configured'}`);
   console.log(`  CAPE:     ${process.env.CAPE_API_URL || 'NOT configured'}`);
   console.log(`  Samples:  ${path.resolve(SAMPLE_DIR)}`);
+  console.log(`  Web UI:   ${HAS_DIST ? `serving ${DIST_DIR}` : 'not built (run npm run build)'}`);
 });

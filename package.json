@@ -9,6 +9,8 @@
     "dev:api": "node server.js",
     "kill:ports": "sh -c 'PIDS=$(lsof -ti :4000 -ti :5173 -ti :5174 2>/dev/null); if [ -n \"$PIDS\" ]; then kill -9 $PIDS; fi'",
     "build": "vite build",
+    "start": "NODE_ENV=production node server.js",
+    "build:start": "npm run build && npm run start",
     "preview": "vite preview"
   },
   "dependencies": {

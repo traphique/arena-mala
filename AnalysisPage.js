@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api, createWebSocket } from './clientApi';
 import { EmptyState, Panel, ProtocolBadge, ScoreRing, Spinner, TabBar, VerdictTag } from './UI';
@@ -7,7 +7,7 @@ import { formatBytes, formatDuration, formatTimestamp } from './helpers';
 function Overview({ analysis }) {
   if (!analysis) return null;
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0,1fr))', gap: 12 }}>
+    <div className="analysis-overview-grid">
       {[
         ['Verdict', <VerdictTag verdict={analysis.verdict} size="lg" />],
         ['Threat Score', <ScoreRing score={analysis.threat_score ?? 0} size={56} />],
@@ -40,10 +40,42 @@ export default function AnalysisPage() {
   const [status, setStatus] = useState({ state: 'queued', progress: 0, status: 'Queued' });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('timeline');
+  const [wsReconnecting, setWsReconnecting] = useState(false);
+  const hadWsOpen = useRef(false);
 
   useEffect(() => {
     let mounted = true;
-    let ws;
+    let ws = null;
+    let reconnectTimer = null;
+    let attempt = 0;
+    hadWsOpen.current = false;
+    setWsReconnecting(false);
+
+    const connectWs = () => {
+      if (!mounted) return;
+      ws = createWebSocket(id, {
+        status: s => { if (mounted) setStatus(s); },
+        analysis: a => { if (mounted) setAnalysis(a); },
+        report: r => { if (mounted) setFull(r); },
+        onOpen: () => {
+          if (!mounted) return;
+          attempt = 0;
+          hadWsOpen.current = true;
+          setWsReconnecting(false);
+        },
+        onClose: () => {
+          if (!mounted) return;
+          if (hadWsOpen.current) setWsReconnecting(true);
+          attempt += 1;
+          const delay = Math.min(25000, 750 * Math.pow(2, Math.min(attempt, 5)));
+          reconnectTimer = setTimeout(() => {
+            reconnectTimer = null;
+            if (mounted) connectWs();
+          }, delay);
+        },
+      });
+    };
+
     const load = async () => {
       try {
         const [a, f, s] = await Promise.all([
@@ -56,18 +88,24 @@ export default function AnalysisPage() {
       } finally { if (mounted) setLoading(false); }
     };
     load();
-    ws = createWebSocket(id, {
-      status: s => setStatus(s), analysis: a => setAnalysis(a), report: r => setFull(r),
-    });
+    connectWs();
     const poll = setInterval(async () => {
       try {
         const [a, s] = await Promise.all([api.getAnalysis(id), api.getStatus(id)]);
         if (!mounted) return;
         setAnalysis(a); setStatus(s);
-        if (s.state === 'completed') { const f = await api.getFullAnalysis(id); if (mounted) setFull(f); }
+        if (s.state === 'completed' || s.state === 'static-only') {
+          const f = await api.getFullAnalysis(id);
+          if (mounted) setFull(f);
+        }
       } catch (_) {}
     }, 5000);
-    return () => { mounted = false; clearInterval(poll); if (ws && ws.readyState < 2) ws.close(); };
+    return () => {
+      mounted = false;
+      clearInterval(poll);
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (ws && ws.readyState === WebSocket.OPEN) ws.close();
+    };
   }, [id]);
 
   const timeline = full?.timeline || [];
@@ -110,10 +148,9 @@ export default function AnalysisPage() {
       return (
         <div style={{ padding: 16 }}>
           {network.map((row, idx) => (
-            <div key={`${row.timestamp}-${idx}`} className="fade-up" style={{
-              display: 'grid', gridTemplateColumns: '70px 80px 1fr 60px',
-              gap: 10, borderBottom: '1px solid rgba(200,170,120,0.04)', padding: '10px 0',
-              alignItems: 'center', animationDelay: `${idx * 0.03}s`,
+            <div key={`${row.timestamp}-${idx}`} className="fade-up network-row-grid" style={{
+              borderBottom: '1px solid rgba(200,170,120,0.04)', padding: '10px 0',
+              animationDelay: `${idx * 0.03}s`,
             }}>
               <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text4)', fontSize: 11 }}>+{formatTimestamp(row.timestamp)}</span>
               <ProtocolBadge protocol={row.protocol} />
@@ -128,10 +165,9 @@ export default function AnalysisPage() {
     return (
       <div style={{ padding: 16 }}>
         {iocs.map((ioc, idx) => (
-          <div key={`${ioc.value}-${idx}`} className="fade-up" style={{
-            display: 'grid', gridTemplateColumns: '90px 1fr 70px',
-            gap: 10, borderBottom: '1px solid rgba(200,170,120,0.04)', padding: '10px 0',
-            alignItems: 'center', animationDelay: `${idx * 0.03}s`,
+          <div key={`${ioc.value}-${idx}`} className="fade-up ioc-row-grid" style={{
+            borderBottom: '1px solid rgba(200,170,120,0.04)', padding: '10px 0',
+            animationDelay: `${idx * 0.03}s`,
           }}>
             <span style={{
               color: 'var(--text4)', textTransform: 'uppercase', fontSize: 9,
@@ -171,7 +207,7 @@ export default function AnalysisPage() {
   const stateColor = stateGlows[status.state] || 'var(--text3)';
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', padding: '28px 32px 80px' }}>
+    <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
       <button
         onClick={() => navigate('/')}
         className="fade-in"
@@ -234,6 +270,12 @@ export default function AnalysisPage() {
         <div style={{ fontSize: 11, color: 'var(--text4)', marginTop: 8, fontFamily: 'var(--font-mono)' }}>
           {status.progress || 0}% complete
         </div>
+        {wsReconnecting && !['completed', 'failed', 'static-only'].includes(status.state) && (
+          <div className="analysis-live-banner" role="status">
+            <Spinner size={14} color="var(--orange)" />
+            Reconnecting to live updates… polling still runs every few seconds.
+          </div>
+        )}
       </div>
 
       <div className="fade-up delay-2" style={{ marginBottom: 16 }}>

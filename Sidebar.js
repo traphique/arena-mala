@@ -8,27 +8,36 @@ const ITEMS = [
   { path: '/threats', icon: 'M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z M12 9v4 M12 17h.01', title: 'Threat Intel' },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ mobileOpen, onClose }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const go = path => {
+    navigate(path);
+    onClose?.();
+  };
+
   return (
-    <aside style={{
-      width: 60,
-      background: 'rgba(26,20,16,0.4)',
-      backdropFilter: 'saturate(160%) blur(16px)',
-      WebkitBackdropFilter: 'saturate(160%) blur(16px)',
-      borderRight: '1px solid rgba(200,170,120,0.06)',
-      display: 'flex', flexDirection: 'column',
-      alignItems: 'center', padding: '16px 0', gap: 6,
-      flexShrink: 0, position: 'relative', zIndex: 2,
-    }}>
+    <>
+      <button
+        type="button"
+        className={`sidebar-backdrop${mobileOpen ? ' sidebar-backdrop--visible' : ''}`}
+        aria-label="Close navigation menu"
+        tabIndex={mobileOpen ? 0 : -1}
+        onClick={onClose}
+      />
+      <aside
+        className={`sidebar-rail${mobileOpen ? ' sidebar-rail--open' : ''}`}
+        aria-label="Primary"
+      >
       {ITEMS.map(item => {
         const active = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
         return (
           <div key={item.path} className="tooltip-wrap">
             <button
-              onClick={() => navigate(item.path)}
+              type="button"
+              aria-label={item.title}
+              onClick={() => go(item.path)}
               style={{
                 width: 40, height: 40,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -77,6 +86,8 @@ export default function Sidebar() {
 
       <div className="tooltip-wrap">
         <button
+          type="button"
+          aria-label="Settings"
           style={{
             width: 40, height: 40,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -95,5 +106,6 @@ export default function Sidebar() {
         <div className="tip">Settings</div>
       </div>
     </aside>
+    </>
   );
 }
