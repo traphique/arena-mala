@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { api, createWebSocket } from './clientApi';
 import { EmptyState, Panel, ProtocolBadge, ScoreRing, Spinner, TabBar, VerdictTag } from './UI';
 import { formatBytes, formatDuration, formatTimestamp } from './helpers';
+import { Card } from './components/ui/card.js';
+import { Button } from './components/ui/button.js';
 
 function Overview({ analysis }) {
   if (!analysis) return null;
@@ -208,50 +210,46 @@ export default function AnalysisPage() {
 
   return (
     <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
-      <button
+      <Button
         onClick={() => navigate('/')}
-        className="fade-in"
-        style={{
-          display: 'flex', alignItems: 'center', gap: 6,
-          background: 'rgba(200,170,120,0.04)', border: '1px solid rgba(200,170,120,0.06)',
-          color: 'var(--text3)', cursor: 'pointer', fontFamily: 'var(--font-ui)', fontSize: 12,
-          fontWeight: 600, marginBottom: 22, padding: '6px 14px', borderRadius: 8,
-          transition: 'all 0.2s',
-        }}
-        onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.background = 'rgba(200,170,120,0.08)'; }}
-        onMouseLeave={e => { e.currentTarget.style.color = 'var(--text3)'; e.currentTarget.style.background = 'rgba(200,170,120,0.04)'; }}
+        variant="glass"
+        size="sm"
+        className="fade-in mb-[22px] gap-1.5 px-3.5"
+        style={{ fontFamily: 'var(--font-ui)' }}
       >
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M19 12H5M12 19l-7-7 7-7"/>
         </svg>
         Dashboard
-      </button>
+      </Button>
 
       {/* Header card */}
-      <div className="glass fade-scale" style={{ padding: '22px 26px', marginBottom: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
+      <Card className="fade-scale mb-4 p-6">
+        <div className="mb-[18px] flex items-center justify-between gap-4">
           <div>
-            <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4, letterSpacing: '-0.01em' }}>
+            <h2 className="mb-1 text-[20px] font-bold tracking-[-0.01em]">
               {analysis.original_filename}
             </h2>
-            <div style={{ color: 'var(--text4)', fontSize: 12, fontFamily: 'var(--font-mono)' }}>
+            <div className="text-[12px] text-[var(--text4)]" style={{ fontFamily: 'var(--font-mono)' }}>
               {analysis.file_type} · {formatBytes(analysis.file_size)} · {id}
             </div>
           </div>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 7,
-            padding: '6px 14px', borderRadius: 10,
-            background: `${stateColor}10`,
-            border: `1px solid ${stateColor}15`,
-            color: stateColor,
-            fontSize: 12, fontWeight: 700, textTransform: 'uppercase',
-            letterSpacing: '0.06em',
-          }}>
-            <span style={{
-              width: 7, height: 7, borderRadius: '50%', background: stateColor,
-              animation: status.state === 'running' ? 'pulse 1.8s ease-in-out infinite' : 'none',
-              boxShadow: `0 0 8px ${stateColor}60`,
-            }} />
+          <div
+            className="inline-flex items-center gap-2 rounded-lg border px-3.5 py-1.5 text-[12px] font-bold uppercase tracking-[0.06em]"
+            style={{
+              background: `${stateColor}10`,
+              borderColor: `${stateColor}15`,
+              color: stateColor,
+            }}
+          >
+            <span
+              className="h-[7px] w-[7px] rounded-full"
+              style={{
+                background: stateColor,
+                animation: status.state === 'running' ? 'pulse 1.8s ease-in-out infinite' : 'none',
+                boxShadow: `0 0 8px ${stateColor}60`,
+              }}
+            />
             {status.state}
           </div>
         </div>
@@ -276,7 +274,7 @@ export default function AnalysisPage() {
             Reconnecting to live updates… polling still runs every few seconds.
           </div>
         )}
-      </div>
+      </Card>
 
       <div className="fade-up delay-2" style={{ marginBottom: 16 }}>
         <Overview analysis={analysis} />

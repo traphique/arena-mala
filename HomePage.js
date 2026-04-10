@@ -4,6 +4,8 @@ import { api } from './clientApi';
 import SubmitForm from './SubmitForm';
 import { VerdictTag, Spinner } from './UI';
 import { formatTime, formatBytes, fileIcon } from './helpers';
+import { Card } from './components/ui/card.js';
+import { Button } from './components/ui/button.js';
 
 const STAT_ICONS = {
   'Total Analyses': 'M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z',
@@ -39,25 +41,21 @@ export default function HomePage() {
   return (
     <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
       {/* Hero */}
-      <div className="fade-up" style={{ textAlign: 'center', marginBottom: 48 }}>
-        <div className="fade-scale" style={{
-          display: 'inline-flex', alignItems: 'center', gap: 7,
-          padding: '6px 16px', borderRadius: 999,
-          background: 'var(--accent-dim)', color: 'var(--accent)',
-          fontSize: 12, fontWeight: 600, marginBottom: 24,
-          border: '1px solid rgba(212,148,60,0.1)',
-          backdropFilter: 'blur(8px)',
-        }}>
+      <div className="fade-up mb-12 text-center">
+        <div
+          className="fade-scale mx-auto inline-flex items-center gap-2 rounded-full border border-[rgba(212,148,60,0.10)] bg-[var(--accent-dim)] px-4 py-1.5 text-xs font-semibold text-[var(--accent)]"
+          style={{ backdropFilter: 'blur(8px)' }}
+        >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 2L22 12L12 22L2 12Z"/>
             <path d="M12 7L10.5 11L13.5 13L12 17"/>
           </svg>
           Malware Analysis Sandbox
         </div>
-        <h1 className="fade-up delay-1 home-hero-title" style={{
-          fontFamily: 'var(--font-ui)', fontWeight: 800,
-          letterSpacing: '-0.03em', lineHeight: 1.08, marginBottom: 18,
-        }}>
+        <h1
+          className="fade-up delay-1 home-hero-title mb-4 font-extrabold tracking-[-0.03em]"
+          style={{ fontFamily: 'var(--font-ui)', lineHeight: 1.08 }}
+        >
           Detonate & Analyze{' '}
           <span style={{
             background: 'linear-gradient(135deg, #e0a040, #d4943c, #c07c28)',
@@ -66,10 +64,7 @@ export default function HomePage() {
             Threats
           </span>
         </h1>
-        <p className="fade-up delay-2" style={{
-          color: 'var(--text2)', maxWidth: 520, margin: '0 auto',
-          fontSize: 16, lineHeight: 1.7,
-        }}>
+        <p className="fade-up delay-2 mx-auto max-w-[520px] text-[16px] leading-[1.7] text-[var(--text2)]">
           Submit files or URLs to execute in isolated VMs. Monitor behavior, intercept
           network traffic, and extract threat intelligence in real time.
         </p>
@@ -82,7 +77,7 @@ export default function HomePage() {
       )}
 
       {/* Submit form */}
-      <div className="fade-scale delay-3" style={{ display: 'flex', justifyContent: 'center', marginBottom: 52 }}>
+      <div className="fade-scale delay-3 mb-[52px] flex justify-center">
         <SubmitForm />
       </div>
 
@@ -129,51 +124,38 @@ export default function HomePage() {
       )}
 
       {/* Recent samples */}
-      <div className="fade-up delay-5" style={{ maxWidth: 720, margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-          <div style={{
-            fontSize: 11, fontWeight: 700, color: 'var(--text3)',
-            letterSpacing: '0.1em', textTransform: 'uppercase',
-          }}>
+      <div className="fade-up delay-5 mx-auto max-w-[720px]">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text3)]">
             Recent Public Submissions
           </div>
-          <button
+          <Button
             onClick={() => navigate('/public')}
-            style={{
-              background: 'rgba(200,170,120,0.06)', border: '1px solid rgba(200,170,120,0.08)',
-              color: 'var(--accent)', fontSize: 12,
-              cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600,
-              display: 'flex', alignItems: 'center', gap: 5,
-              padding: '5px 12px', borderRadius: 8,
-              transition: 'all 0.25s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-dim)'; e.currentTarget.style.borderColor = 'rgba(212,148,60,0.15)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(200,170,120,0.06)'; e.currentTarget.style.borderColor = 'rgba(200,170,120,0.08)'; }}
+            variant="glass"
+            size="sm"
+            className="font-semibold"
+            style={{ fontFamily: 'var(--font-ui)' }}
           >
             View all
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
-          </button>
+          </Button>
         </div>
 
         {loadingRecent ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}><Spinner /></div>
         ) : (
-          <div className="glass" style={{ overflow: 'hidden', padding: 0 }}>
+          <Card className="overflow-hidden p-0">
             {recent.map((sample, i) => (
               <div
                 key={sample.id}
                 onClick={() => navigate('/analysis/' + sample.id)}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 14,
-                  padding: '13px 18px',
-                  borderBottom: i < recent.length - 1 ? '1px solid rgba(200,170,120,0.06)' : 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s cubic-bezier(0.22, 0.68, 0, 1)',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(200,170,120,0.04)'; e.currentTarget.style.paddingLeft = '22px'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.paddingLeft = '18px'; }}
+                className={[
+                  'flex cursor-pointer items-center gap-3.5 px-[18px] py-3.5 transition-all',
+                  i < recent.length - 1 ? 'border-b border-[rgba(200,170,120,0.06)]' : '',
+                  'hover:bg-[rgba(200,170,120,0.04)] hover:pl-[22px]',
+                ].join(' ')}
               >
                 <div style={{
                   width: 38, height: 38, borderRadius: 10,
@@ -215,7 +197,7 @@ export default function HomePage() {
                 <VerdictTag verdict={sample.verdict} />
               </div>
             ))}
-          </div>
+          </Card>
         )}
       </div>
     </div>

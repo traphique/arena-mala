@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { api } from './clientApi';
+import { Badge } from './components/ui/badge.js';
 
 const NAV_ITEMS = [
   { path: '/', label: 'Dashboard', icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10' },
@@ -21,17 +22,11 @@ export default function Header({ onMenuClick }) {
   }, []);
 
   return (
-    <header style={{
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '0 16px 0 24px', height: 58,
-      background: 'rgba(26,20,16,0.6)',
-      backdropFilter: 'saturate(180%) blur(20px)',
-      WebkitBackdropFilter: 'saturate(180%) blur(20px)',
-      borderBottom: '1px solid rgba(200,170,120,0.06)',
-      flexShrink: 0, zIndex: 200,
-      position: 'relative',
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
+    <header
+      className="relative z-[200] flex h-[58px] shrink-0 items-center justify-between border-b border-[rgba(200,170,120,0.06)] bg-[rgba(26,20,16,0.6)] px-4 pl-6 backdrop-blur-[20px] backdrop-saturate-150"
+      style={{ WebkitBackdropFilter: 'saturate(180%) blur(20px)' }}
+    >
+      <div className="flex items-center gap-9">
         {onMenuClick && (
           <button
             type="button"
@@ -50,37 +45,33 @@ export default function Header({ onMenuClick }) {
           tabIndex={0}
           onClick={() => navigate('/')}
           onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/'); } }}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 11,
-            cursor: 'pointer', userSelect: 'none',
-          }}
+          className="flex cursor-pointer select-none items-center gap-3"
         >
-          <div style={{
-            width: 34, height: 34,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            position: 'relative',
-          }}>
+          <div className="relative flex h-[34px] w-[34px] items-center justify-center">
             {/* Diamond-shaped mark */}
-            <div style={{
-              width: 28, height: 28,
-              background: 'linear-gradient(135deg, #e0a040, #d4943c, #c07c28)',
-              borderRadius: 6,
-              transform: 'rotate(45deg)',
-              boxShadow: '0 2px 14px rgba(212,148,60,0.35), 0 0 28px rgba(212,148,60,0.12)',
-              animation: 'glow 4s ease-in-out infinite',
-              position: 'absolute',
-            }} />
+            <div
+              className="absolute h-7 w-7 rounded-md"
+              style={{
+                background: 'linear-gradient(135deg, #e0a040, #d4943c, #c07c28)',
+                transform: 'rotate(45deg)',
+                boxShadow: '0 2px 14px rgba(212,148,60,0.35), 0 0 28px rgba(212,148,60,0.12)',
+                animation: 'glow 4s ease-in-out infinite',
+              }}
+            />
             {/* Crack icon */}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'relative', zIndex: 1 }}>
               <path d="M12 3L10 10.5L14 13L12 21"/>
             </svg>
           </div>
-          <span style={{
-            fontFamily: 'var(--font-ui)', fontWeight: 800, fontSize: 19,
-            letterSpacing: '-0.01em',
-            background: 'linear-gradient(135deg, var(--text), var(--accent))',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          }}>
+          <span
+            className="text-[19px] font-extrabold tracking-[-0.01em]"
+            style={{
+              fontFamily: 'var(--font-ui)',
+              background: 'linear-gradient(135deg, var(--text), var(--accent))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             Arena<span style={{ WebkitTextFillColor: 'var(--accent)', color: 'var(--accent)' }}> Mala</span>
           </span>
         </div>
@@ -94,32 +85,23 @@ export default function Header({ onMenuClick }) {
                 type="button"
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                style={{
-                  background: active ? 'var(--accent-dim)' : 'transparent',
-                  border: 'none',
-                  color: active ? 'var(--accent)' : 'var(--text3)',
-                  padding: '7px 14px',
-                  borderRadius: 'var(--radius)',
-                  cursor: 'pointer',
-                  fontFamily: 'var(--font-ui)', fontSize: 13, fontWeight: 600,
-                  transition: 'all 0.25s cubic-bezier(0.22, 0.68, 0, 1)',
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  position: 'relative',
-                }}
-                onMouseEnter={e => { if (!active) { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.background = 'rgba(200,170,120,0.06)'; }}}
-                onMouseLeave={e => { if (!active) { e.currentTarget.style.color = 'var(--text3)'; e.currentTarget.style.background = 'transparent'; }}}
+                className={[
+                  'relative flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors',
+                  active
+                    ? 'bg-[var(--accent-dim)] text-[var(--accent)]'
+                    : 'bg-transparent text-[var(--text3)] hover:bg-[rgba(200,170,120,0.06)] hover:text-[var(--text)]',
+                ].join(' ')}
+                style={{ fontFamily: 'var(--font-ui)' }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d={item.icon} />
                 </svg>
                 {item.label}
                 {active && (
-                  <span style={{
-                    position: 'absolute', bottom: -1, left: '50%', transform: 'translateX(-50%)',
-                    width: 20, height: 2, borderRadius: 1,
-                    background: 'var(--accent)',
-                    boxShadow: '0 0 8px rgba(212,148,60,0.4)',
-                  }} />
+                  <span
+                    className="absolute -bottom-px left-1/2 h-0.5 w-5 -translate-x-1/2 rounded"
+                    style={{ background: 'var(--accent)', boxShadow: '0 0 8px rgba(212,148,60,0.4)' }}
+                  />
                 )}
               </button>
             );
@@ -127,34 +109,29 @@ export default function Header({ onMenuClick }) {
         </nav>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div className="flex items-center gap-4">
         {stats && (
-          <div className="header-stat-pill" style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '5px 12px', borderRadius: 8,
-            background: 'rgba(200,170,120,0.04)',
-            border: '1px solid rgba(200,170,120,0.06)',
-          }}>
-            <span style={{
-              width: 6, height: 6, borderRadius: '50%',
-              background: 'var(--green2)',
-              animation: 'pulse 2s ease-in-out infinite',
-              boxShadow: '0 0 8px rgba(76,175,80,0.4)',
-            }} />
-            <span style={{ fontSize: 11, color: 'var(--text3)', fontFamily: 'var(--font-mono)', fontWeight: 500 }}>
+          <div className="header-stat-pill flex items-center gap-2 rounded-md border border-[rgba(200,170,120,0.06)] bg-[rgba(200,170,120,0.04)] px-3 py-1.5">
+            <span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{
+                background: 'var(--green2)',
+                animation: 'pulse 2s ease-in-out infinite',
+                boxShadow: '0 0 8px rgba(76,175,80,0.4)',
+              }}
+            />
+            <span className="text-[11px] font-medium text-[var(--text3)]" style={{ fontFamily: 'var(--font-mono)' }}>
               {stats.total_analyses?.toLocaleString()} analyses · {stats.malicious_rate}% malicious
             </span>
           </div>
         )}
-        <span style={{
-          fontFamily: 'var(--font-mono)', fontSize: 10,
-          padding: '4px 12px', borderRadius: 8,
-          background: 'var(--accent-dim)', color: 'var(--accent)',
-          border: '1px solid rgba(212,148,60,0.12)',
-          letterSpacing: '0.08em', fontWeight: 700,
-        }}>
+        <Badge
+          variant="primary"
+          className="rounded-lg px-3 py-1 text-[10px] font-bold tracking-[0.08em]"
+          style={{ fontFamily: 'var(--font-mono)' }}
+        >
           FREE TIER
-        </span>
+        </Badge>
       </div>
     </header>
   );

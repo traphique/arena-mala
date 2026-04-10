@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --bg:        #1a1410;
   --bg2:       #221c14;
@@ -62,6 +66,18 @@
   --shadow-lg:  0 8px 32px rgba(0,0,0,0.25), 0 4px 8px rgba(0,0,0,0.15);
   --shadow-xl:  0 16px 64px rgba(0,0,0,0.30), 0 8px 16px rgba(0,0,0,0.15);
   --shadow-glow: 0 0 40px rgba(212,148,60,0.08), 0 0 80px rgba(212,148,60,0.04);
+
+  /* shadcn-style semantic tokens mapped to existing palette */
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--glass);
+  --card-foreground: var(--text);
+  --muted: rgba(200,170,120,0.06);
+  --muted-foreground: var(--text3);
+  --border-color: rgba(200,170,120,0.12);
+  --primary: var(--accent);
+  --primary-foreground: #1a1410;
+  --accent-color: var(--warm);
 }
 
 *, *::before, *::after {

@@ -38,39 +38,18 @@ export default function Sidebar({ mobileOpen, onClose }) {
               type="button"
               aria-label={item.title}
               onClick={() => go(item.path)}
-              style={{
-                width: 40, height: 40,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: active ? 'var(--accent-dim)' : 'transparent',
-                border: 'none',
-                borderRadius: 'var(--radius)',
-                cursor: 'pointer',
-                color: active ? 'var(--accent)' : 'var(--text4)',
-                transition: 'all 0.25s cubic-bezier(0.22, 0.68, 0, 1)',
-                position: 'relative',
-              }}
-              onMouseEnter={e => {
-                if (!active) {
-                  e.currentTarget.style.background = 'rgba(200,170,120,0.08)';
-                  e.currentTarget.style.color = 'var(--text2)';
-                  e.currentTarget.style.transform = 'scale(1.08)';
-                }
-              }}
-              onMouseLeave={e => {
-                if (!active) {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = 'var(--text4)';
-                  e.currentTarget.style.transform = 'scale(1)';
-                }
-              }}
+              className={[
+                'relative flex h-10 w-10 items-center justify-center rounded-md transition-all',
+                active
+                  ? 'bg-[var(--accent-dim)] text-[var(--accent)]'
+                  : 'bg-transparent text-[var(--text4)] hover:bg-[rgba(200,170,120,0.08)] hover:text-[var(--text2)] hover:scale-[1.08]',
+              ].join(' ')}
             >
               {active && (
-                <span style={{
-                  position: 'absolute', left: -1, top: '50%', transform: 'translateY(-50%)',
-                  width: 3, height: 20, borderRadius: '0 2px 2px 0',
-                  background: 'var(--accent)',
-                  boxShadow: '0 0 8px rgba(212,148,60,0.4)',
-                }} />
+                <span
+                  className="absolute -left-px top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-sm"
+                  style={{ background: 'var(--accent)', boxShadow: '0 0 8px rgba(212,148,60,0.4)' }}
+                />
               )}
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d={item.icon} />
@@ -81,23 +60,14 @@ export default function Sidebar({ mobileOpen, onClose }) {
         );
       })}
 
-      <div style={{ flex: 1 }} />
-      <div style={{ width: 28, height: 1, background: 'rgba(200,170,120,0.08)', margin: '4px 0' }} />
+      <div className="flex-1" />
+      <div className="my-1 h-px w-7" style={{ background: 'rgba(200,170,120,0.08)' }} />
 
       <div className="tooltip-wrap">
         <button
           type="button"
           aria-label="Settings"
-          style={{
-            width: 40, height: 40,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: 'transparent', border: 'none',
-            borderRadius: 'var(--radius)', cursor: 'pointer',
-            color: 'var(--text4)',
-            transition: 'all 0.25s cubic-bezier(0.22, 0.68, 0, 1)',
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(200,170,120,0.08)'; e.currentTarget.style.color = 'var(--text2)'; e.currentTarget.style.transform = 'scale(1.08)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text4)'; e.currentTarget.style.transform = 'scale(1)'; }}
+          className="flex h-10 w-10 items-center justify-center rounded-md bg-transparent text-[var(--text4)] transition-all hover:scale-[1.08] hover:bg-[rgba(200,170,120,0.08)] hover:text-[var(--text2)]"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
