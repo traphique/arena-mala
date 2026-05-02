@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npm run kill:ports && concurrently \"npm:dev:web\" \"npm:dev:api\"",
-    "dev:web": "vite --port 5173 --strictPort",
+    "dev:web": "vite",
     "dev:api": "node server.js",
     "kill:ports": "sh -c 'PIDS=$(lsof -ti :4000 -ti :5173 -ti :5174 2>/dev/null); if [ -n \"$PIDS\" ]; then kill -9 $PIDS; fi'",
     "build": "vite build",

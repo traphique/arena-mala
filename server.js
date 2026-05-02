@@ -461,7 +461,7 @@ app.use((req, res) => {
 
 // ─── Start ───────────────────────────────────
 
-const PORT = Number(process.env.PORT || 4000);
+const PORT = Number(process.env.PORT || 8000);
 server.listen(PORT, () => {
   console.log(`Arena Mala API listening on http://localhost:${PORT}`);
   console.log(`  Supabase: ${process.env.SUPABASE_URL ? 'configured' : 'NOT configured'}`);
