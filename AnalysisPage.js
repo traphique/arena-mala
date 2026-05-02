@@ -242,6 +242,7 @@ export default function AnalysisPage() {
 
   return (
     <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
+    <div className="page-inner">
 
       {/* Back button */}
       <button
@@ -338,6 +339,7 @@ export default function AnalysisPage() {
           {tabBody}
         </Panel>
       </div>
+    </div>
     </div>
   );
 }

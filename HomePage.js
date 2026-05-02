@@ -26,6 +26,7 @@ export default function HomePage() {
 
   return (
     <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
+    <div className="page-inner">
 
       {/* Page header */}
       <div className="fade-up" style={{
@@ -235,6 +236,7 @@ export default function HomePage() {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }

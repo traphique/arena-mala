@@ -91,7 +91,7 @@ export default function SubmitForm() {
 
   return (
     <div style={{
-      width: '100%', maxWidth: 760,
+      width: '100%', maxWidth: 760, margin: '0 auto',
       background: 'var(--surface)',
       border: '1px solid var(--border)',
       borderRadius: 'var(--radius-lg)',

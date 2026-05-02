@@ -27,6 +27,7 @@ export default function PublicFeedPage() {
 
   return (
     <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
+    <div className="page-inner">
       <div className="fade-up" style={{ marginBottom: 20 }}>
         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 26, fontWeight: 500, marginBottom: 4 }}>Public Feed</h2>
         <p style={{ color: 'var(--text3)', fontSize: 13 }}>
@@ -101,6 +102,7 @@ export default function PublicFeedPage() {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 }
