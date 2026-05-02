@@ -20,6 +20,7 @@ import {
 } from './lib/supabase.js';
 
 import { analyzeStatic } from './lib/static-analysis.js';
+import { getRuntimeConfig, setRuntimeConfig } from './lib/runtimeConfig.js';
 
 import {
   isAvailable as isSandboxAvailable,
@@ -441,6 +442,26 @@ app.get('/api/ioc/threat-families', safe(async (_req, res) => {
     tags: f.tags || [],
   })));
 }));
+
+// ─── Settings ────────────────────────────────
+
+app.get('/api/settings', (req, res) => {
+  const { supabaseUrl, supabaseKey, capeUrl, capeKey } = getRuntimeConfig();
+  res.json({
+    supabaseUrl,
+    supabaseConfigured: !!(supabaseUrl && supabaseKey),
+    capeUrl,
+    capeConfigured: !!(capeUrl && capeKey),
+    supabaseKeySet: !!supabaseKey,
+    capeKeySet: !!capeKey,
+  });
+});
+
+app.post('/api/settings/apply', (req, res) => {
+  const { supabaseUrl, supabaseKey, capeUrl, capeKey } = req.body || {};
+  setRuntimeConfig({ supabaseUrl, supabaseKey, capeUrl, capeKey });
+  res.json({ ok: true });
+});
 
 // ─── Production: Vite build (same origin) ────
 

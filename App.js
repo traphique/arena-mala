@@ -7,6 +7,8 @@ import AnalysisPage from './AnalysisPage';
 import PublicFeedPage from './PublicFeedPage';
 import IOCSearchPage from './IOCSearchPage';
 import ThreatIntelPage from './ThreatIntelPage';
+import SettingsPage from './SettingsPage';
+import { loadStoredSettings, applySettingsToServer } from './clientApi';
 
 function AppInner() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -15,6 +17,12 @@ function AppInner() {
   useEffect(() => {
     setMobileNavOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const stored = loadStoredSettings();
+    const hasAny = Object.values(stored).some(v => v);
+    if (hasAny) applySettingsToServer(stored).catch(() => {});
+  }, []);
 
   return (
     <div style={{
@@ -41,6 +49,7 @@ function AppInner() {
             <Route path="/public" element={<PublicFeedPage />} />
             <Route path="/ioc" element={<IOCSearchPage />} />
             <Route path="/threats" element={<ThreatIntelPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </div>
       </div>

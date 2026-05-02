@@ -1,5 +1,43 @@
 const API_BASE = '/api';
 
+export const STORAGE_KEYS = {
+  supabaseUrl: 'arena_supabase_url',
+  supabaseKey: 'arena_supabase_key',
+  capeUrl:     'arena_cape_url',
+  capeKey:     'arena_cape_key',
+};
+
+export function loadStoredSettings() {
+  return {
+    supabaseUrl: localStorage.getItem(STORAGE_KEYS.supabaseUrl) || '',
+    supabaseKey: localStorage.getItem(STORAGE_KEYS.supabaseKey) || '',
+    capeUrl:     localStorage.getItem(STORAGE_KEYS.capeUrl)     || '',
+    capeKey:     localStorage.getItem(STORAGE_KEYS.capeKey)     || '',
+  };
+}
+
+export function saveStoredSettings(settings) {
+  Object.entries(STORAGE_KEYS).forEach(([k, storageKey]) => {
+    if (settings[k] !== undefined) {
+      if (settings[k]) localStorage.setItem(storageKey, settings[k]);
+      else localStorage.removeItem(storageKey);
+    }
+  });
+}
+
+export async function applySettingsToServer(settings) {
+  await fetch(API_BASE + '/settings/apply', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(settings),
+  });
+}
+
+export async function fetchServerSettings() {
+  const res = await fetch(API_BASE + '/settings');
+  return res.json();
+}
+
 async function apiFetch(path, options = {}) {
   const res = await fetch(API_BASE + path, {
     headers: { 'Content-Type': 'application/json', ...options.headers },
