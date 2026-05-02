@@ -32,7 +32,7 @@ export default function IOCSearchPage() {
       </div>
 
       {/* Search bar */}
-      <div className="fade-scale delay-1" style={{ display: 'flex', gap: 8, marginBottom: 24, maxWidth: 640 }}>
+      <div className="fade-scale delay-1" style={{ display: 'flex', gap: 8, marginBottom: 24, maxWidth: 640, margin: '0 auto 24px' }}>
         <div style={{ flex: 1, position: 'relative' }}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
             style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
@@ -83,7 +83,7 @@ export default function IOCSearchPage() {
 
       {!loading && !searched && (
         <div style={{
-          maxWidth: 640,
+          maxWidth: 640, margin: '0 auto',
           background: 'var(--surface)', border: '1px solid var(--border)',
           borderRadius: 'var(--radius-lg)', padding: '32px',
           textAlign: 'center',
@@ -97,7 +97,7 @@ export default function IOCSearchPage() {
       )}
 
       {results.length > 0 && (
-        <div style={{ maxWidth: 640 }}>
+        <div style={{ maxWidth: 640, margin: '0 auto' }}>
           {/* Header row */}
           <div style={{
             display: 'grid', gridTemplateColumns: '90px 1fr 70px',
