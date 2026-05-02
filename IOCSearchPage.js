@@ -3,7 +3,7 @@ import { api } from './clientApi';
 import { EmptyState, Spinner } from './UI';
 
 const IOC_TYPE_COLOR = {
-  ip: 'var(--blue)', domain: 'var(--purple)', url: 'var(--cyan)',
+  ip: 'var(--amber)', domain: 'var(--purple)', url: 'var(--cyan)',
   md5: 'var(--orange)', sha1: 'var(--orange)', sha256: 'var(--orange)',
   filepath: 'var(--text3)', registry: 'var(--text3)', email: 'var(--green)',
 };
@@ -24,7 +24,7 @@ export default function IOCSearchPage() {
   return (
     <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
       <div className="fade-up" style={{ marginBottom: 24 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.01em', marginBottom: 4 }}>IOC Search</h2>
+        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 26, fontWeight: 500, marginBottom: 4 }}>IOC Search</h2>
         <p style={{ color: 'var(--text3)', fontSize: 13 }}>
           Search indicators of compromise across all analyses
         </p>
@@ -58,15 +58,15 @@ export default function IOCSearchPage() {
         <button
           onClick={search}
           style={{
-            background: 'var(--blue)', border: 'none',
+            background: 'var(--amber)', border: 'none',
             borderRadius: 'var(--radius)', padding: '11px 22px',
             color: '#fff', fontWeight: 600, fontSize: 13,
             fontFamily: 'var(--font-ui)', cursor: 'pointer',
-            boxShadow: '0 2px 10px rgba(59,130,246,0.25)',
+            boxShadow: 'var(--shadow-amber)',
             transition: 'all 0.15s',
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'var(--blue2)'; e.currentTarget.style.boxShadow = '0 4px 18px rgba(59,130,246,0.35)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'var(--blue)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(59,130,246,0.25)'; }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--amber2)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'var(--amber)'; }}
         >
           Search
         </button>

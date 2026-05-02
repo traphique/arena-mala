@@ -4,6 +4,17 @@
 
 Arena Mala is a full-stack malware analysis sandbox web application. It allows users to submit files or URLs for analysis, detonating them in an isolated environment and reporting behavioral telemetry, network activity, IOCs (Indicators of Compromise), and threat intelligence.
 
+## Design System — Warm Slate / Amber
+
+The UI uses a warm dark theme graduated from a canvas mockup:
+- **Background**: `#1c1917` warm stone-dark (not blue-grey)
+- **Accent**: amber `#d97706` / `#b45309` — used for active nav, buttons, borders
+- **Typography**: Playfair Display (serif) for all page headings; Inter for body; JetBrains Mono for code
+- **Borders**: warm amber-tinted `rgba(217,119,6,0.12)`
+- **Radius**: 4px (sharp, professional)
+- **Sidebar**: labeled "OPERATIONS" section, amber left-bar active indicator
+- **Header nav**: Analysis / Hunting / Intelligence (center-aligned)
+
 ## Architecture
 
 - **Frontend**: React 18 + Vite, Tailwind CSS, React Router v6

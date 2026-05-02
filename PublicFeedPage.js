@@ -28,7 +28,7 @@ export default function PublicFeedPage() {
   return (
     <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
       <div className="fade-up" style={{ marginBottom: 20 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.01em', marginBottom: 4 }}>Public Feed</h2>
+        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 26, fontWeight: 500, marginBottom: 4 }}>Public Feed</h2>
         <p style={{ color: 'var(--text3)', fontSize: 13 }}>
           Community-submitted samples and their analysis results
         </p>

@@ -114,8 +114,8 @@ export function TabBar({ tabs, active, onChange }) {
             {tab.count !== undefined && (
               <span style={{
                 fontFamily: 'var(--font-mono)', fontSize: 10,
-                background: isActive ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.05)',
-                color: isActive ? 'var(--blue)' : 'var(--text4)',
+                background: isActive ? 'rgba(217,119,6,0.12)' : 'rgba(255,255,255,0.05)',
+                color: isActive ? 'var(--amber)' : 'var(--text4)',
                 padding: '1px 7px', borderRadius: 4,
               }}>
                 {tab.count}
@@ -125,7 +125,7 @@ export function TabBar({ tabs, active, onChange }) {
               <span style={{
                 position: 'absolute', bottom: -1, left: '10%', right: '10%',
                 height: 2, borderRadius: '2px 2px 0 0',
-                background: 'var(--blue)',
+                background: 'var(--amber)',
               }} />
             )}
           </button>
@@ -192,7 +192,7 @@ export function CopyButton({ text }) {
   );
 }
 
-export function Spinner({ size = 18, color = 'var(--blue)' }) {
+export function Spinner({ size = 18, color = 'var(--amber)' }) {
   return (
     <div style={{
       width: size, height: size,

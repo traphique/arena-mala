@@ -133,7 +133,7 @@ export default function AnalysisPage() {
               <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 5 }}>
                 <div style={{
                   width: 8, height: 8, borderRadius: '50%',
-                  background: 'var(--blue)', flexShrink: 0, zIndex: 1,
+                  background: 'var(--amber)', flexShrink: 0, zIndex: 1,
                 }} />
                 {idx < timeline.length - 1 && (
                   <div style={{ width: 1, flex: 1, background: 'rgba(255,255,255,0.06)', marginTop: 4 }} />
@@ -235,7 +235,7 @@ export default function AnalysisPage() {
   );
 
   const STATE_COLOR = {
-    completed: 'var(--green)', running: 'var(--blue)',
+    completed: 'var(--green)', running: 'var(--amber)',
     'static-only': 'var(--cyan)', queued: 'var(--text4)', failed: 'var(--red)',
   };
   const stateColor = STATE_COLOR[status.state] || 'var(--text3)';
