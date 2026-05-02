@@ -5,7 +5,7 @@ import { EmptyState, Spinner, VerdictTag } from './UI';
 import { fileIcon, formatBytes, formatTime } from './helpers';
 
 export default function PublicFeedPage() {
-  const [items, setItems] = useState([]);
+  const [items, setItems]     = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -21,58 +21,82 @@ export default function PublicFeedPage() {
 
   if (!items.length) return (
     <div style={{ flex: 1 }}>
-      <EmptyState message="No public submissions yet" sub="Submit a sample to see it appear in the feed" />
+      <EmptyState message="No public submissions yet" sub="Submit a sample to see it appear here" />
     </div>
   );
 
   return (
     <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
-      <div className="fade-up" style={{ marginBottom: 24 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6, letterSpacing: '-0.01em' }}>Public Feed</h2>
-        <p style={{ color: 'var(--text3)', fontSize: 14 }}>
-          Browse publicly submitted samples and their analysis results
+      <div className="fade-up" style={{ marginBottom: 20 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.01em', marginBottom: 4 }}>Public Feed</h2>
+        <p style={{ color: 'var(--text3)', fontSize: 13 }}>
+          Community-submitted samples and their analysis results
         </p>
       </div>
 
-      <div className="glass fade-scale delay-1" style={{ overflow: 'hidden', padding: 0 }}>
+      {/* Table header */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: '36px 1fr 90px 60px 80px',
+        gap: 12, padding: '8px 16px',
+        background: 'rgba(255,255,255,0.02)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-lg) var(--radius-lg) 0 0',
+      }}>
+        {['', 'File', 'Type', 'Score', 'Verdict'].map(h => (
+          <span key={h} style={{ fontSize: 10, fontWeight: 600, color: 'var(--text4)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{h}</span>
+        ))}
+      </div>
+
+      <div style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)', borderTop: 'none',
+        borderRadius: '0 0 var(--radius-lg) var(--radius-lg)',
+        overflow: 'hidden',
+      }}>
         {items.map((sample, i) => (
           <div
             key={sample.id}
             onClick={() => navigate(`/analysis/${sample.id}`)}
             style={{
-              display: 'grid', gridTemplateColumns: '46px 1fr auto auto',
-              gap: 14, alignItems: 'center',
-              padding: '13px 18px',
-              borderBottom: i < items.length - 1 ? '1px solid rgba(200,170,120,0.04)' : 'none',
+              display: 'grid', gridTemplateColumns: '36px 1fr 90px 60px 80px',
+              gap: 12, alignItems: 'center',
+              padding: '10px 16px',
+              borderBottom: i < items.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
               cursor: 'pointer',
-              transition: 'all 0.2s cubic-bezier(0.22, 0.68, 0, 1)',
+              transition: 'background 0.15s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(200,170,120,0.03)'; e.currentTarget.style.paddingLeft = '22px'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.paddingLeft = '18px'; }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
           >
             <div style={{
-              width: 40, height: 40, borderRadius: 12,
-              background: 'rgba(200,170,120,0.06)', border: '1px solid rgba(200,170,120,0.04)',
+              width: 32, height: 32, borderRadius: 7,
+              background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 18, transition: 'transform 0.2s',
+              fontSize: 15, flexShrink: 0,
             }}>
               {fileIcon(sample.original_filename, sample.file_type)}
             </div>
+
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontWeight: 600, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <div style={{ fontWeight: 500, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text)' }}>
                 {sample.original_filename}
               </div>
-              <div style={{ color: 'var(--text4)', fontSize: 11, fontFamily: 'var(--font-mono)', marginTop: 3 }}>
-                {sample.file_type} · {formatBytes(sample.file_size)} · {formatTime(sample.created_at)}
+              <div style={{ color: 'var(--text4)', fontSize: 11, fontFamily: 'var(--font-mono)', marginTop: 2 }}>
+                {formatBytes(sample.file_size)} · {formatTime(sample.created_at)}
               </div>
             </div>
+
+            <div style={{ fontSize: 11, color: 'var(--text3)', fontFamily: 'var(--font-mono)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {sample.file_type || '—'}
+            </div>
+
             <span style={{
+              fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 13,
               color: sample.threat_score >= 70 ? 'var(--red)' : sample.threat_score >= 30 ? 'var(--orange)' : 'var(--yellow)',
-              fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 14,
-              textShadow: `0 0 12px ${sample.threat_score >= 70 ? 'rgba(239,83,80,0.3)' : 'rgba(255,152,0,0.2)'}`,
             }}>
-              {sample.threat_score}
+              {sample.threat_score || '—'}
             </span>
+
             <VerdictTag verdict={sample.verdict} />
           </div>
         ))}

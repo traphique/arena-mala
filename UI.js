@@ -3,19 +3,18 @@ import { verdictColor, verdictBg, severityColor, severityBg, protocolColor, prot
 
 export function VerdictTag({ verdict, size = 'sm' }) {
   if (!verdict) return null;
-  const fs = size === 'lg' ? 12 : 10;
-  const px = size === 'lg' ? '6px 14px' : '4px 10px';
+  const fs = size === 'lg' ? 11 : 10;
+  const px = size === 'lg' ? '4px 12px' : '3px 8px';
   const color = verdictColor(verdict);
   return (
     <span style={{
       display: 'inline-block',
       fontFamily: 'var(--font-mono)', fontSize: fs,
-      fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
-      padding: px, borderRadius: 8,
+      fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
+      padding: px, borderRadius: 5,
       color, background: verdictBg(verdict),
-      border: `1px solid ${color}20`,
+      border: `1px solid ${color}25`,
       whiteSpace: 'nowrap',
-      textShadow: `0 0 12px ${color}30`,
     }}>
       {verdict}
     </span>
@@ -28,10 +27,9 @@ export function SeverityBadge({ severity }) {
   return (
     <span style={{
       fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700,
-      letterSpacing: '0.08em', textTransform: 'uppercase',
-      padding: '3px 10px', borderRadius: 8,
+      letterSpacing: '0.06em', textTransform: 'uppercase',
+      padding: '3px 8px', borderRadius: 5,
       color, background: severityBg(severity),
-      textShadow: `0 0 10px ${color}25`,
     }}>
       {severity}
     </span>
@@ -43,8 +41,8 @@ export function ProtocolBadge({ protocol }) {
   return (
     <span style={{
       fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700,
-      letterSpacing: '0.06em',
-      padding: '3px 10px', borderRadius: 8,
+      letterSpacing: '0.04em', textTransform: 'uppercase',
+      padding: '3px 8px', borderRadius: 5,
       color: protocolColor(protocol), background: protocolBg(protocol),
     }}>
       {protocol}
@@ -52,25 +50,24 @@ export function ProtocolBadge({ protocol }) {
   );
 }
 
-export function Panel({ title, dot, dotColor = 'var(--green2)', right, children, style = {}, bodyStyle = {} }) {
+export function Panel({ title, dot, dotColor = 'var(--green)', right, children, style = {}, bodyStyle = {} }) {
   return (
     <div className="glass" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', ...style }}>
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '11px 18px', flexShrink: 0,
-        borderBottom: '1px solid rgba(200,170,120,0.06)',
+        padding: '10px 16px', flexShrink: 0,
+        borderBottom: '1px solid var(--border)',
       }}>
         <div style={{
           display: 'flex', alignItems: 'center', gap: 8,
-          fontSize: 11, fontWeight: 700, letterSpacing: '0.08em',
-          textTransform: 'uppercase', color: 'var(--text2)',
+          fontSize: 12, fontWeight: 600, letterSpacing: '0.01em',
+          color: 'var(--text)',
         }}>
           {dot !== false && (
             <span style={{
               width: 6, height: 6, borderRadius: '50%',
               background: dotColor,
-              animation: 'pulse 2s ease-in-out infinite',
-              boxShadow: `0 0 8px ${dotColor}60`,
+              animation: 'pulse 2.5s ease-in-out infinite',
               flexShrink: 0,
             }} />
           )}
@@ -89,8 +86,9 @@ export function TabBar({ tabs, active, onChange }) {
   return (
     <div style={{
       display: 'flex', gap: 0,
-      borderBottom: '1px solid rgba(200,170,120,0.06)',
-      padding: '0 14px', flexShrink: 0,
+      borderBottom: '1px solid var(--border)',
+      padding: '0 12px', flexShrink: 0,
+      background: 'rgba(255,255,255,0.01)',
     }}>
       {tabs.map(tab => {
         const isActive = active === tab.id;
@@ -100,12 +98,11 @@ export function TabBar({ tabs, active, onChange }) {
             onClick={() => onChange(tab.id)}
             style={{
               background: 'none', border: 'none',
-              padding: '11px 14px',
-              fontFamily: 'var(--font-ui)', fontSize: 12, fontWeight: 600,
-              letterSpacing: '0.03em',
-              color: isActive ? 'var(--accent)' : 'var(--text3)',
+              padding: '10px 14px',
+              fontFamily: 'var(--font-ui)', fontSize: 13, fontWeight: isActive ? 600 : 400,
+              color: isActive ? 'var(--text)' : 'var(--text3)',
               cursor: 'pointer',
-              transition: 'all 0.25s cubic-bezier(0.22, 0.68, 0, 1)',
+              transition: 'all 0.15s',
               display: 'flex', alignItems: 'center', gap: 7,
               whiteSpace: 'nowrap', position: 'relative',
             }}
@@ -117,19 +114,18 @@ export function TabBar({ tabs, active, onChange }) {
             {tab.count !== undefined && (
               <span style={{
                 fontFamily: 'var(--font-mono)', fontSize: 10,
-                background: isActive ? 'var(--accent-dim)' : 'rgba(200,170,120,0.06)',
-                color: isActive ? 'var(--accent)' : 'var(--text4)',
-                padding: '1px 8px', borderRadius: 8,
+                background: isActive ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.05)',
+                color: isActive ? 'var(--blue)' : 'var(--text4)',
+                padding: '1px 7px', borderRadius: 4,
               }}>
                 {tab.count}
               </span>
             )}
             {isActive && (
               <span style={{
-                position: 'absolute', bottom: -1, left: '15%', right: '15%',
-                height: 2, borderRadius: 1,
-                background: 'var(--accent)',
-                boxShadow: '0 0 10px rgba(212,148,60,0.4)',
+                position: 'absolute', bottom: -1, left: '10%', right: '10%',
+                height: 2, borderRadius: '2px 2px 0 0',
+                background: 'var(--blue)',
               }} />
             )}
           </button>
@@ -143,27 +139,25 @@ export function ScoreRing({ score = 0, size = 80 }) {
   const r = (size / 2) - 6;
   const circ = 2 * Math.PI * r;
   const offset = circ - (circ * Math.min(score, 100) / 100);
-  const color = score >= 70 ? 'var(--red)' : score >= 30 ? 'var(--orange)' : 'var(--green2)';
-  const glowColor = score >= 70 ? 'rgba(239,83,80,0.3)' : score >= 30 ? 'rgba(255,152,0,0.3)' : 'rgba(76,175,80,0.2)';
+  const color = score >= 70 ? 'var(--red)' : score >= 30 ? 'var(--orange)' : 'var(--green)';
 
   return (
     <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
-      <svg width={size} height={size} style={{ transform: 'rotate(-90deg)', filter: `drop-shadow(0 0 8px ${glowColor})` }}>
-        <circle cx={size/2} cy={size/2} r={r} stroke="rgba(200,170,120,0.08)" strokeWidth={4} fill="none" />
+      <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+        <circle cx={size/2} cy={size/2} r={r} stroke="rgba(255,255,255,0.06)" strokeWidth={4} fill="none" />
         <circle
           cx={size/2} cy={size/2} r={r}
           stroke={color} strokeWidth={4} fill="none"
           strokeDasharray={circ} strokeDashoffset={offset}
           strokeLinecap="round"
-          style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.22, 0.68, 0, 1)' }}
+          style={{ transition: 'stroke-dashoffset 0.9s cubic-bezier(0.22, 0.68, 0, 1)' }}
         />
       </svg>
       <div style={{
         position: 'absolute', inset: 0,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: 'var(--font-mono)', fontSize: size > 70 ? 20 : 14,
+        fontFamily: 'var(--font-mono)', fontSize: size > 70 ? 18 : 13,
         fontWeight: 800, color,
-        textShadow: `0 0 16px ${glowColor}`,
       }}>
         {score}
       </div>
@@ -181,11 +175,11 @@ export function CopyButton({ text }) {
   };
   return (
     <button onClick={copy} style={{
-      background: copied ? 'rgba(76,175,80,0.1)' : 'rgba(200,170,120,0.06)',
-      border: '1px solid ' + (copied ? 'rgba(76,175,80,0.15)' : 'rgba(200,170,120,0.06)'),
-      color: copied ? 'var(--green2)' : 'var(--text4)',
-      cursor: 'pointer', fontSize: 11, padding: '4px 8px',
-      borderRadius: 8, transition: 'all 0.25s',
+      background: copied ? 'rgba(34,197,94,0.08)' : 'rgba(255,255,255,0.04)',
+      border: '1px solid ' + (copied ? 'rgba(34,197,94,0.15)' : 'var(--border)'),
+      color: copied ? 'var(--green)' : 'var(--text4)',
+      cursor: 'pointer', fontSize: 11, padding: '3px 8px',
+      borderRadius: 6, transition: 'all 0.2s',
       fontFamily: 'var(--font-mono)',
       display: 'flex', alignItems: 'center', gap: 4,
     }}>
@@ -198,13 +192,13 @@ export function CopyButton({ text }) {
   );
 }
 
-export function Spinner({ size = 18, color = 'var(--accent)' }) {
+export function Spinner({ size = 18, color = 'var(--blue)' }) {
   return (
     <div style={{
       width: size, height: size,
-      border: `2px solid rgba(200,170,120,0.1)`,
+      border: `2px solid rgba(255,255,255,0.08)`,
       borderTopColor: color, borderRadius: '50%',
-      animation: 'spin 0.7s linear infinite',
+      animation: 'spin 0.65s linear infinite',
       flexShrink: 0,
     }} />
   );
@@ -214,24 +208,24 @@ export function EmptyState({ icon, message = 'No data', sub }) {
   return (
     <div className="fade-scale" style={{
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      padding: 56, gap: 10, color: 'var(--text3)',
+      padding: 48, gap: 8, color: 'var(--text3)',
     }}>
       <div style={{
-        width: 56, height: 56, borderRadius: 16,
-        background: 'rgba(200,170,120,0.04)', border: '1px solid rgba(200,170,120,0.06)',
+        width: 48, height: 48, borderRadius: 12,
+        background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        marginBottom: 6,
+        marginBottom: 4,
       }}>
         {icon ? (
-          <span style={{ fontSize: 26 }}>{icon}</span>
+          <span style={{ fontSize: 22 }}>{icon}</span>
         ) : (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/><path d="M8 15h8M9 9h.01M15 9h.01"/>
           </svg>
         )}
       </div>
       <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text2)' }}>{message}</div>
-      {sub && <div style={{ fontSize: 13, color: 'var(--text4)' }}>{sub}</div>}
+      {sub && <div style={{ fontSize: 12, color: 'var(--text4)' }}>{sub}</div>}
     </div>
   );
 }
@@ -256,9 +250,9 @@ export function TagList({ tags = [], max = 8 }) {
       {visible.map((tag, i) => (
         <span key={i} style={{
           fontFamily: 'var(--font-mono)', fontSize: 10,
-          padding: '3px 10px', borderRadius: 8,
-          background: 'rgba(200,170,120,0.06)', border: '1px solid rgba(200,170,120,0.06)',
-          color: 'var(--text2)',
+          padding: '3px 9px', borderRadius: 5,
+          background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+          color: 'var(--text3)',
         }}>
           {tag}
         </span>
@@ -266,8 +260,8 @@ export function TagList({ tags = [], max = 8 }) {
       {rest > 0 && (
         <span style={{
           fontFamily: 'var(--font-mono)', fontSize: 10,
-          padding: '3px 10px', borderRadius: 8,
-          background: 'rgba(200,170,120,0.04)', color: 'var(--text4)',
+          padding: '3px 9px', borderRadius: 5,
+          background: 'rgba(255,255,255,0.02)', color: 'var(--text4)',
         }}>
           +{rest}
         </span>
@@ -280,11 +274,11 @@ export function InfoRow({ label, value, mono }) {
   return (
     <div style={{
       display: 'flex', gap: 10, alignItems: 'flex-start',
-      padding: '7px 0', borderBottom: '1px solid rgba(200,170,120,0.04)',
+      padding: '7px 0', borderBottom: '1px solid rgba(255,255,255,0.03)',
     }}>
       <span style={{
         width: 120, flexShrink: 0, fontSize: 11, color: 'var(--text4)',
-        fontWeight: 600, letterSpacing: '0.04em', paddingTop: 1,
+        fontWeight: 500, paddingTop: 1,
       }}>
         {label}
       </span>

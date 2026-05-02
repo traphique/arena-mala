@@ -28,54 +28,83 @@ export default function Sidebar({ mobileOpen, onClose }) {
       />
       <aside
         className={`sidebar-rail${mobileOpen ? ' sidebar-rail--open' : ''}`}
-        aria-label="Primary"
+        aria-label="Primary navigation"
       >
-      {ITEMS.map(item => {
-        const active = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
-        return (
-          <div key={item.path} className="tooltip-wrap">
+        {/* Section label */}
+        <div style={{
+          fontSize: 10, fontWeight: 700, letterSpacing: '0.10em',
+          textTransform: 'uppercase', color: 'var(--text4)',
+          padding: '4px 12px 8px',
+        }}>
+          Navigation
+        </div>
+
+        {ITEMS.map(item => {
+          const active = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
+          return (
             <button
+              key={item.path}
               type="button"
-              aria-label={item.title}
               onClick={() => go(item.path)}
-              className={[
-                'relative flex h-10 w-10 items-center justify-center rounded-md transition-all',
-                active
-                  ? 'bg-[var(--accent-dim)] text-[var(--accent)]'
-                  : 'bg-transparent text-[var(--text4)] hover:bg-[rgba(200,170,120,0.08)] hover:text-[var(--text2)] hover:scale-[1.08]',
-              ].join(' ')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '8px 12px', borderRadius: 'var(--radius)',
+                border: 'none', width: '100%', textAlign: 'left',
+                background: active ? 'rgba(59,130,246,0.10)' : 'transparent',
+                color: active ? 'var(--blue)' : 'var(--text3)',
+                fontSize: 13, fontWeight: active ? 600 : 400,
+                fontFamily: 'var(--font-ui)',
+                cursor: 'pointer',
+                transition: 'all 0.15s',
+                position: 'relative',
+              }}
+              onMouseEnter={e => { if (!active) { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'var(--text)'; } }}
+              onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text3)'; } }}
             >
               {active && (
-                <span
-                  className="absolute -left-px top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-sm"
-                  style={{ background: 'var(--accent)', boxShadow: '0 0 8px rgba(212,148,60,0.4)' }}
-                />
+                <span style={{
+                  position: 'absolute', left: 0, top: '20%', bottom: '20%',
+                  width: 3, borderRadius: '0 2px 2px 0',
+                  background: 'var(--blue)',
+                }} />
               )}
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                 <path d={item.icon} />
               </svg>
+              {item.title}
             </button>
-            <div className="tip">{item.title}</div>
-          </div>
-        );
-      })}
+          );
+        })}
 
-      <div className="flex-1" />
-      <div className="my-1 h-px w-7" style={{ background: 'rgba(200,170,120,0.08)' }} />
+        <div style={{ flex: 1 }} />
 
-      <div className="tooltip-wrap">
+        <div style={{
+          height: 1, background: 'var(--border)',
+          margin: '8px 12px',
+        }} />
+
         <button
           type="button"
-          aria-label="Settings"
-          className="flex h-10 w-10 items-center justify-center rounded-md bg-transparent text-[var(--text4)] transition-all hover:scale-[1.08] hover:bg-[rgba(200,170,120,0.08)] hover:text-[var(--text2)]"
+          style={{
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: '8px 12px', borderRadius: 'var(--radius)',
+            border: 'none', width: '100%', textAlign: 'left',
+            background: 'transparent',
+            color: 'var(--text4)',
+            fontSize: 13, fontFamily: 'var(--font-ui)',
+            cursor: 'pointer',
+            transition: 'all 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'var(--text2)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text4)'; }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
           </svg>
+          Settings
         </button>
-        <div className="tip">Settings</div>
-      </div>
-    </aside>
+      </aside>
     </>
   );
 }

@@ -4,8 +4,6 @@ import { api } from './clientApi';
 import SubmitForm from './SubmitForm';
 import { VerdictTag, Spinner } from './UI';
 import { formatTime, formatBytes, fileIcon } from './helpers';
-import { Card } from './components/ui/card.js';
-import { Button } from './components/ui/button.js';
 
 const STAT_ICONS = {
   'Total Analyses': 'M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z',
@@ -14,11 +12,18 @@ const STAT_ICONS = {
   'Avg. Analysis': 'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
 };
 
+const STAT_COLORS = {
+  'Total Analyses': 'var(--blue)',
+  'Malicious Rate': 'var(--red)',
+  'Today':          'var(--purple)',
+  'Avg. Analysis':  'var(--green)',
+};
+
 export default function HomePage() {
-  const [stats, setStats] = useState(null);
-  const [recent, setRecent] = useState([]);
+  const [stats, setStats]               = useState(null);
+  const [recent, setRecent]             = useState([]);
   const [loadingRecent, setLoadingRecent] = useState(true);
-  const [bannerError, setBannerError] = useState(null);
+  const [bannerError, setBannerError]   = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,33 +45,35 @@ export default function HomePage() {
 
   return (
     <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
+
       {/* Hero */}
-      <div className="fade-up mb-12 text-center">
-        <div
-          className="fade-scale mx-auto inline-flex items-center gap-2 rounded-full border border-[rgba(212,148,60,0.10)] bg-[var(--accent-dim)] px-4 py-1.5 text-xs font-semibold text-[var(--accent)]"
-          style={{ backdropFilter: 'blur(8px)' }}
-        >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2L22 12L12 22L2 12Z"/>
-            <path d="M12 7L10.5 11L13.5 13L12 17"/>
-          </svg>
+      <div className="fade-up" style={{ textAlign: 'center', marginBottom: 36 }}>
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 7,
+          padding: '5px 14px', borderRadius: 20,
+          border: '1px solid rgba(239,68,68,0.20)',
+          background: 'rgba(239,68,68,0.07)',
+          fontSize: 12, fontWeight: 600, color: 'var(--red)',
+          marginBottom: 20,
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--red)', animation: 'pulse 2s ease-in-out infinite', flexShrink: 0 }} />
           Malware Analysis Sandbox
         </div>
-        <h1
-          className="fade-up delay-1 home-hero-title mb-4 font-extrabold tracking-[-0.03em]"
-          style={{ fontFamily: 'var(--font-ui)', lineHeight: 1.08 }}
-        >
-          Detonate & Analyze{' '}
-          <span style={{
-            background: 'linear-gradient(135deg, #e0a040, #d4943c, #c07c28)',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          }}>
-            Threats
-          </span>
+
+        <h1 className="home-hero-title fade-up delay-1" style={{
+          fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.1,
+          marginBottom: 16, color: 'var(--text)',
+        }}>
+          Detonate &amp; Analyze{' '}
+          <span style={{ color: 'var(--red)' }}>Threats</span>
         </h1>
-        <p className="fade-up delay-2 mx-auto max-w-[520px] text-[16px] leading-[1.7] text-[var(--text2)]">
-          Submit files or URLs to execute in isolated VMs. Monitor behavior, intercept
-          network traffic, and extract threat intelligence in real time.
+
+        <p className="fade-up delay-2" style={{
+          maxWidth: 480, margin: '0 auto',
+          fontSize: 15, lineHeight: 1.7, color: 'var(--text3)',
+        }}>
+          Submit files or URLs for execution in isolated VMs. Monitor behavior,
+          intercept network traffic, and extract threat intelligence in real time.
         </p>
       </div>
 
@@ -77,7 +84,7 @@ export default function HomePage() {
       )}
 
       {/* Submit form */}
-      <div className="fade-scale delay-3 mb-[52px] flex justify-center">
+      <div className="fade-scale delay-3" style={{ display: 'flex', justifyContent: 'center', marginBottom: 44 }}>
         <SubmitForm />
       </div>
 
@@ -85,102 +92,134 @@ export default function HomePage() {
       {stats && (
         <div className="fade-up delay-4 home-stats-grid">
           {[
-            { label: 'Total Analyses', value: stats.total_analyses?.toLocaleString(), color: 'var(--accent)' },
-            { label: 'Malicious Rate', value: stats.malicious_rate + '%', color: 'var(--red)' },
-            { label: 'Today', value: stats.today?.toLocaleString(), color: 'var(--purple)' },
-            { label: 'Avg. Analysis', value: '~45s', color: 'var(--green2)' },
-          ].map((stat, i) => (
-            <div key={stat.label} className="glass gradient-border" style={{
-              padding: '20px 16px', textAlign: 'center',
-              cursor: 'default',
-            }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: 12,
-                background: `${stat.color}15`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                margin: '0 auto 12px',
-                transition: 'transform 0.3s',
-              }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={stat.color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d={STAT_ICONS[stat.label]} />
-                </svg>
+            { label: 'Total Analyses', value: stats.total_analyses?.toLocaleString() },
+            { label: 'Malicious Rate', value: stats.malicious_rate + '%' },
+            { label: 'Today',          value: stats.today?.toLocaleString() },
+            { label: 'Avg. Analysis',  value: '~45s' },
+          ].map((stat) => {
+            const color = STAT_COLORS[stat.label];
+            return (
+              <div key={stat.label} style={{
+                background: 'var(--surface)', border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-lg)', padding: '18px 16px',
+                textAlign: 'center',
+                transition: 'border-color 0.2s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border2)'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+              >
+                <div style={{
+                  width: 36, height: 36, borderRadius: 9,
+                  background: `${color}12`,
+                  border: `1px solid ${color}20`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto 12px',
+                }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d={STAT_ICONS[stat.label]} />
+                  </svg>
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-mono)', fontSize: 20, fontWeight: 800,
+                  color, marginBottom: 4,
+                }}>
+                  {stat.value}
+                </div>
+                <div style={{
+                  fontSize: 11, color: 'var(--text4)',
+                  letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 500,
+                }}>
+                  {stat.label}
+                </div>
               </div>
-              <div style={{
-                fontFamily: 'var(--font-mono)', fontSize: 22, fontWeight: 800,
-                color: stat.color, marginBottom: 4,
-                textShadow: `0 0 20px ${stat.color}30`,
-              }}>
-                {stat.value}
-              </div>
-              <div style={{
-                fontSize: 11, color: 'var(--text3)', letterSpacing: '0.06em',
-                textTransform: 'uppercase', fontWeight: 600,
-              }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
       {/* Recent samples */}
-      <div className="fade-up delay-5 mx-auto max-w-[720px]">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text3)]">
-            Recent Public Submissions
-          </div>
-          <Button
+      <div className="fade-up delay-5" style={{ maxWidth: 720, margin: '0 auto' }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          marginBottom: 12,
+        }}>
+          <span style={{
+            fontSize: 12, fontWeight: 600, color: 'var(--text2)',
+            letterSpacing: '0.01em',
+          }}>
+            Recent Submissions
+          </span>
+          <button
             onClick={() => navigate('/public')}
-            variant="glass"
-            size="sm"
-            className="font-semibold"
-            style={{ fontFamily: 'var(--font-ui)' }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)', padding: '5px 12px',
+              color: 'var(--text3)', fontSize: 12, fontWeight: 500,
+              fontFamily: 'var(--font-ui)', cursor: 'pointer',
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; e.currentTarget.style.color = 'var(--text)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'var(--text3)'; }}
           >
             View all
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
-          </Button>
+          </button>
         </div>
 
         {loadingRecent ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}><Spinner /></div>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 36 }}><Spinner /></div>
+        ) : recent.length === 0 ? (
+          <div style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)', padding: '32px',
+            textAlign: 'center', color: 'var(--text4)', fontSize: 13,
+          }}>
+            No recent submissions yet
+          </div>
         ) : (
-          <Card className="overflow-hidden p-0">
+          <div style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)', overflow: 'hidden',
+          }}>
             {recent.map((sample, i) => (
               <div
                 key={sample.id}
                 onClick={() => navigate('/analysis/' + sample.id)}
-                className={[
-                  'flex cursor-pointer items-center gap-3.5 px-[18px] py-3.5 transition-all',
-                  i < recent.length - 1 ? 'border-b border-[rgba(200,170,120,0.06)]' : '',
-                  'hover:bg-[rgba(200,170,120,0.04)] hover:pl-[22px]',
-                ].join(' ')}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  padding: '11px 16px', cursor: 'pointer',
+                  borderBottom: i < recent.length - 1 ? '1px solid var(--border)' : 'none',
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
               >
                 <div style={{
-                  width: 38, height: 38, borderRadius: 10,
-                  background: 'rgba(200,170,120,0.06)', border: '1px solid rgba(200,170,120,0.06)',
+                  width: 34, height: 34, borderRadius: 8,
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 17, flexShrink: 0,
-                  transition: 'transform 0.2s',
+                  fontSize: 15, flexShrink: 0,
                 }}>
                   {fileIcon(sample.original_filename, sample.file_type)}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontWeight: 500, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text)' }}>
                     {sample.original_filename}
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--text3)', fontFamily: 'var(--font-mono)', marginTop: 3 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text4)', fontFamily: 'var(--font-mono)', marginTop: 2 }}>
                     {sample.file_type || 'Unknown'} · {formatBytes(sample.file_size)} · {formatTime(sample.created_at)}
                   </div>
                 </div>
                 {sample.malware_family && (
                   <div style={{
-                    fontSize: 10, color: 'var(--text2)', fontFamily: 'var(--font-mono)',
-                    flexShrink: 0, maxWidth: 140, overflow: 'hidden',
-                    textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                    background: 'rgba(200,170,120,0.06)', padding: '4px 10px', borderRadius: 8,
-                    border: '1px solid rgba(200,170,120,0.06)',
+                    fontSize: 10, color: 'var(--text3)', fontFamily: 'var(--font-mono)',
+                    flexShrink: 0, maxWidth: 130,
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    background: 'rgba(255,255,255,0.04)', padding: '3px 8px', borderRadius: 5,
+                    border: '1px solid var(--border)',
                   }}>
                     {sample.malware_family}
                   </div>
@@ -189,7 +228,7 @@ export default function HomePage() {
                   <div style={{
                     fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700, flexShrink: 0,
                     color: sample.threat_score >= 70 ? 'var(--red)' : sample.threat_score >= 30 ? 'var(--orange)' : 'var(--yellow)',
-                    textShadow: `0 0 12px ${sample.threat_score >= 70 ? 'rgba(239,83,80,0.3)' : sample.threat_score >= 30 ? 'rgba(255,152,0,0.3)' : 'rgba(255,193,7,0.2)'}`,
+                    width: 32, textAlign: 'right',
                   }}>
                     {sample.threat_score}
                   </div>
@@ -197,7 +236,7 @@ export default function HomePage() {
                 <VerdictTag verdict={sample.verdict} />
               </div>
             ))}
-          </Card>
+          </div>
         )}
       </div>
     </div>

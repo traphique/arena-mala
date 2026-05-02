@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { api } from './clientApi';
-import { Badge } from './components/ui/badge.js';
 
 const NAV_ITEMS = [
   { path: '/', label: 'Dashboard', icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10' },
@@ -22,11 +21,15 @@ export default function Header({ onMenuClick }) {
   }, []);
 
   return (
-    <header
-      className="relative z-[200] flex h-[58px] shrink-0 items-center justify-between border-b border-[rgba(200,170,120,0.06)] bg-[rgba(26,20,16,0.6)] px-4 pl-6 backdrop-blur-[20px] backdrop-saturate-150"
-      style={{ WebkitBackdropFilter: 'saturate(180%) blur(20px)' }}
-    >
-      <div className="flex items-center gap-9">
+    <header style={{
+      position: 'relative', zIndex: 200,
+      height: 52, flexShrink: 0,
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      padding: '0 16px 0 20px',
+      borderBottom: '1px solid var(--border)',
+      background: 'var(--bg2)',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
         {onMenuClick && (
           <button
             type="button"
@@ -34,45 +37,35 @@ export default function Header({ onMenuClick }) {
             aria-label="Open navigation menu"
             onClick={onMenuClick}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
               <path d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         )}
+
         {/* Logo */}
         <div
           role="button"
           tabIndex={0}
           onClick={() => navigate('/')}
           onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/'); } }}
-          className="flex cursor-pointer select-none items-center gap-3"
+          style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', userSelect: 'none' }}
         >
-          <div className="relative flex h-[34px] w-[34px] items-center justify-center">
-            {/* Diamond-shaped mark */}
-            <div
-              className="absolute h-7 w-7 rounded-md"
-              style={{
-                background: 'linear-gradient(135deg, #e0a040, #d4943c, #c07c28)',
-                transform: 'rotate(45deg)',
-                boxShadow: '0 2px 14px rgba(212,148,60,0.35), 0 0 28px rgba(212,148,60,0.12)',
-                animation: 'glow 4s ease-in-out infinite',
-              }}
-            />
-            {/* Crack icon */}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'relative', zIndex: 1 }}>
-              <path d="M12 3L10 10.5L14 13L12 21"/>
+          <div style={{
+            width: 28, height: 28, borderRadius: 7,
+            background: 'var(--red)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+          }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
             </svg>
           </div>
-          <span
-            className="text-[19px] font-extrabold tracking-[-0.01em]"
-            style={{
-              fontFamily: 'var(--font-ui)',
-              background: 'linear-gradient(135deg, var(--text), var(--accent))',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            Arena<span style={{ WebkitTextFillColor: 'var(--accent)', color: 'var(--accent)' }}> Mala</span>
+          <span style={{
+            fontSize: 16, fontWeight: 700, letterSpacing: '-0.01em',
+            color: 'var(--text)', fontFamily: 'var(--font-ui)',
+          }}>
+            Arena<span style={{ color: 'var(--red)' }}>Mala</span>
           </span>
         </div>
 
@@ -85,53 +78,59 @@ export default function Header({ onMenuClick }) {
                 type="button"
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className={[
-                  'relative flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors',
-                  active
-                    ? 'bg-[var(--accent-dim)] text-[var(--accent)]'
-                    : 'bg-transparent text-[var(--text3)] hover:bg-[rgba(200,170,120,0.06)] hover:text-[var(--text)]',
-                ].join(' ')}
-                style={{ fontFamily: 'var(--font-ui)' }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  padding: '6px 12px', borderRadius: 'var(--radius)',
+                  border: 'none', background: active ? 'rgba(59,130,246,0.10)' : 'transparent',
+                  color: active ? 'var(--blue)' : 'var(--text3)',
+                  fontSize: 13, fontWeight: 500,
+                  fontFamily: 'var(--font-ui)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                  position: 'relative',
+                }}
+                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'var(--text)'; } }}
+                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text3)'; } }}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d={item.icon} />
                 </svg>
                 {item.label}
-                {active && (
-                  <span
-                    className="absolute -bottom-px left-1/2 h-0.5 w-5 -translate-x-1/2 rounded"
-                    style={{ background: 'var(--accent)', boxShadow: '0 0 8px rgba(212,148,60,0.4)' }}
-                  />
-                )}
               </button>
             );
           })}
         </nav>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         {stats && (
-          <div className="header-stat-pill flex items-center gap-2 rounded-md border border-[rgba(200,170,120,0.06)] bg-[rgba(200,170,120,0.04)] px-3 py-1.5">
-            <span
-              className="h-1.5 w-1.5 rounded-full"
-              style={{
-                background: 'var(--green2)',
-                animation: 'pulse 2s ease-in-out infinite',
-                boxShadow: '0 0 8px rgba(76,175,80,0.4)',
-              }}
-            />
-            <span className="text-[11px] font-medium text-[var(--text3)]" style={{ fontFamily: 'var(--font-mono)' }}>
-              {stats.total_analyses?.toLocaleString()} analyses · {stats.malicious_rate}% malicious
+          <div className="header-stat-pill" style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '5px 12px', borderRadius: 'var(--radius)',
+            border: '1px solid var(--border)',
+            background: 'rgba(255,255,255,0.02)',
+          }}>
+            <span style={{
+              width: 6, height: 6, borderRadius: '50%',
+              background: 'var(--green)',
+              animation: 'pulse 2.5s ease-in-out infinite',
+              flexShrink: 0,
+            }} />
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text3)' }}>
+              {stats.total_analyses?.toLocaleString()} scans · {stats.malicious_rate}% malicious
             </span>
           </div>
         )}
-        <Badge
-          variant="primary"
-          className="rounded-lg px-3 py-1 text-[10px] font-bold tracking-[0.08em]"
-          style={{ fontFamily: 'var(--font-mono)' }}
-        >
-          FREE TIER
-        </Badge>
+        <span style={{
+          fontSize: 10, fontWeight: 700, letterSpacing: '0.08em',
+          padding: '4px 10px', borderRadius: 6,
+          background: 'rgba(59,130,246,0.10)',
+          border: '1px solid rgba(59,130,246,0.20)',
+          color: 'var(--blue)',
+          fontFamily: 'var(--font-mono)',
+        }}>
+          FREE
+        </span>
       </div>
     </header>
   );

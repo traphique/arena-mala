@@ -8,17 +8,6 @@ import PublicFeedPage from './PublicFeedPage';
 import IOCSearchPage from './IOCSearchPage';
 import ThreatIntelPage from './ThreatIntelPage';
 
-function AnimatedBackground() {
-  return (
-    <div className="arena-bg">
-      <div className="orb orb-1" />
-      <div className="orb orb-2" />
-      <div className="orb orb-3" />
-      <div className="orb orb-4" />
-    </div>
-  );
-}
-
 function AppInner() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const location = useLocation();
@@ -33,7 +22,7 @@ function AppInner() {
       height: '100vh', overflow: 'hidden',
       position: 'relative', zIndex: 1,
     }}>
-      <AnimatedBackground />
+      <div className="arena-bg" />
       <Header onMenuClick={() => setMobileNavOpen(true)} />
       <div style={{
         display: 'flex', flex: 1,

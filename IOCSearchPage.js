@@ -2,8 +2,14 @@ import React, { useState } from 'react';
 import { api } from './clientApi';
 import { EmptyState, Spinner } from './UI';
 
+const IOC_TYPE_COLOR = {
+  ip: 'var(--blue)', domain: 'var(--purple)', url: 'var(--cyan)',
+  md5: 'var(--orange)', sha1: 'var(--orange)', sha256: 'var(--orange)',
+  filepath: 'var(--text3)', registry: 'var(--text3)', email: 'var(--green)',
+};
+
 export default function IOCSearchPage() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery]     = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
@@ -17,94 +23,128 @@ export default function IOCSearchPage() {
 
   return (
     <div className="page-padding-main" style={{ flex: 1, overflowY: 'auto' }}>
-      <div className="fade-up" style={{ marginBottom: 28 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6, letterSpacing: '-0.01em' }}>IOC Search</h2>
-        <p style={{ color: 'var(--text3)', fontSize: 14 }}>
-          Search for indicators of compromise across all analyses
+      <div className="fade-up" style={{ marginBottom: 24 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.01em', marginBottom: 4 }}>IOC Search</h2>
+        <p style={{ color: 'var(--text3)', fontSize: 13 }}>
+          Search indicators of compromise across all analyses
         </p>
       </div>
 
-      <div className="fade-scale delay-1" style={{ display: 'flex', gap: 10, marginBottom: 24, maxWidth: 660 }}>
+      {/* Search bar */}
+      <div className="fade-scale delay-1" style={{ display: 'flex', gap: 8, marginBottom: 24, maxWidth: 640 }}>
         <div style={{ flex: 1, position: 'relative' }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-            style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
           <input
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && search()}
-            placeholder="Search IP, domain, URL, hash..."
+            placeholder="Search IP, domain, URL, MD5, SHA256..."
             style={{
               width: '100%',
-              background: 'var(--glass)',
-              backdropFilter: 'var(--blur-sm)',
-              WebkitBackdropFilter: 'var(--blur-sm)',
-              border: '1px solid rgba(200,170,120,0.08)',
+              background: 'var(--surface)',
+              border: '1px solid var(--border2)',
               borderRadius: 'var(--radius)',
-              color: 'var(--text)', padding: '12px 16px 12px 42px',
+              color: 'var(--text)', padding: '11px 14px 11px 40px',
               fontFamily: 'var(--font-mono)', fontSize: 13, outline: 'none',
-              transition: 'all 0.25s cubic-bezier(0.22, 0.68, 0, 1)',
+              transition: 'border-color 0.15s, box-shadow 0.15s',
             }}
-            onFocus={e => { e.target.style.borderColor = 'rgba(212,148,60,0.25)'; e.target.style.boxShadow = '0 0 0 3px rgba(212,148,60,0.06), 0 0 30px rgba(212,148,60,0.04)'; }}
-            onBlur={e => { e.target.style.borderColor = 'rgba(200,170,120,0.08)'; e.target.style.boxShadow = 'none'; }}
+            onFocus={e => { e.target.style.borderColor = 'rgba(59,130,246,0.4)'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.08)'; }}
+            onBlur={e => { e.target.style.borderColor = ''; e.target.style.boxShadow = ''; }}
           />
         </div>
         <button
           onClick={search}
-          className="btn-glow"
           style={{
-            background: 'linear-gradient(135deg, #e0a040, #c07c28)',
-            color: '#fff', border: 'none', borderRadius: 'var(--radius)',
-            padding: '12px 22px', fontWeight: 700, fontSize: 13,
-            cursor: 'pointer', fontFamily: 'var(--font-ui)',
-            boxShadow: '0 4px 16px rgba(212,148,60,0.25)',
-            transition: 'all 0.25s', position: 'relative', overflow: 'hidden',
+            background: 'var(--blue)', border: 'none',
+            borderRadius: 'var(--radius)', padding: '11px 22px',
+            color: '#fff', fontWeight: 600, fontSize: 13,
+            fontFamily: 'var(--font-ui)', cursor: 'pointer',
+            boxShadow: '0 2px 10px rgba(59,130,246,0.25)',
+            transition: 'all 0.15s',
           }}
-          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,148,60,0.35)'; }}
-          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(212,148,60,0.25)'; }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--blue2)'; e.currentTarget.style.boxShadow = '0 4px 18px rgba(59,130,246,0.35)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'var(--blue)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(59,130,246,0.25)'; }}
         >
           Search
         </button>
       </div>
 
-      {loading && <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}><Spinner /></div>}
+      {loading && (
+        <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}><Spinner /></div>
+      )}
 
       {!loading && searched && !results.length && (
-        <EmptyState message="No IOC matches found" sub="Try a different search term or submit more analyses" />
+        <EmptyState message="No matches found" sub="Try a different term or submit more analyses to build the IOC database" />
       )}
 
       {!loading && !searched && (
-        <EmptyState message="Search for indicators" sub="Enter an IP, domain, URL, or hash to find matches" />
+        <div style={{
+          maxWidth: 640,
+          background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)', padding: '32px',
+          textAlign: 'center',
+        }}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto 12px', display: 'block' }}>
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text2)', marginBottom: 6 }}>Search for indicators</div>
+          <div style={{ fontSize: 12, color: 'var(--text4)' }}>Enter an IP, domain, URL, or file hash to search across all analyses</div>
+        </div>
       )}
 
       {results.length > 0 && (
-        <div className="glass fade-scale" style={{ overflow: 'hidden', padding: 0, maxWidth: 660 }}>
-          {results.map((ioc, idx) => (
-            <div key={`${ioc.value}-${idx}`} className="fade-up" style={{
-              display: 'grid', gridTemplateColumns: '90px 1fr 70px',
-              gap: 10, padding: '12px 18px',
-              borderBottom: idx < results.length - 1 ? '1px solid rgba(200,170,120,0.04)' : 'none',
-              alignItems: 'center', animationDelay: `${idx * 0.04}s`,
-            }}>
-              <span style={{
-                color: 'var(--text4)', textTransform: 'uppercase', fontSize: 9,
-                fontWeight: 700, letterSpacing: '0.06em',
-                background: 'rgba(200,170,120,0.06)', padding: '3px 8px', borderRadius: 6,
-                textAlign: 'center',
+        <div style={{ maxWidth: 640 }}>
+          {/* Header row */}
+          <div style={{
+            display: 'grid', gridTemplateColumns: '90px 1fr 70px',
+            gap: 12, padding: '8px 16px',
+            background: 'rgba(255,255,255,0.02)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg) var(--radius-lg) 0 0',
+          }}>
+            {['Type', 'Value', 'Confidence'].map(h => (
+              <span key={h} style={{ fontSize: 10, fontWeight: 600, color: 'var(--text4)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{h}</span>
+            ))}
+          </div>
+          <div style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--border)', borderTop: 'none',
+            borderRadius: '0 0 var(--radius-lg) var(--radius-lg)',
+            overflow: 'hidden',
+          }}>
+            {results.map((ioc, idx) => (
+              <div key={`${ioc.value}-${idx}`} className="fade-up" style={{
+                display: 'grid', gridTemplateColumns: '90px 1fr 70px',
+                gap: 12, padding: '10px 16px',
+                borderBottom: idx < results.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
+                alignItems: 'center', animationDelay: `${idx * 0.03}s`,
               }}>
-                {ioc.type}
-              </span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, wordBreak: 'break-all' }}>{ioc.value}</span>
-              <span style={{
-                fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 600, textAlign: 'right',
-                color: ioc.confidence >= 80 ? 'var(--red)' : ioc.confidence >= 50 ? 'var(--orange)' : 'var(--text3)',
-                textShadow: ioc.confidence >= 80 ? '0 0 10px rgba(239,83,80,0.2)' : 'none',
-              }}>
-                {ioc.confidence}%
-              </span>
-            </div>
-          ))}
+                <span style={{
+                  textTransform: 'uppercase', fontSize: 9,
+                  fontWeight: 700, letterSpacing: '0.05em',
+                  fontFamily: 'var(--font-mono)',
+                  color: IOC_TYPE_COLOR[ioc.type?.toLowerCase()] || 'var(--text3)',
+                  background: 'rgba(255,255,255,0.04)',
+                  padding: '3px 7px', borderRadius: 4, textAlign: 'center',
+                }}>
+                  {ioc.type}
+                </span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, wordBreak: 'break-all', color: 'var(--text)' }}>{ioc.value}</span>
+                <span style={{
+                  fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 600, textAlign: 'right',
+                  color: ioc.confidence >= 80 ? 'var(--red)' : ioc.confidence >= 50 ? 'var(--orange)' : 'var(--text3)',
+                }}>
+                  {ioc.confidence}%
+                </span>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 8, fontSize: 11, color: 'var(--text4)', fontFamily: 'var(--font-mono)' }}>
+            {results.length} result{results.length !== 1 ? 's' : ''} found
+          </div>
         </div>
       )}
     </div>
